@@ -77,22 +77,17 @@ COPY httpd.conf /etc/apache2/httpd.conf
 ARG SERVER_ROOT
 
 RUN sed -i "s#{SERVER_ROOT}#$SERVER_ROOT#g" /etc/apache2/httpd.conf
-VOLUME [ "/var/www/" ]
-WORKDIR /var/www
 
 COPY apache /
 RUN rm -Rf /var/www/*
-COPY php_ini/a_php7.2.ini /etc/php/7.2/php.ini
+COPY php_ini/php7.2.ini /etc/php/7.2/php.ini
 RUN chmod +x /sbin/runit-wrapper
 RUN chmod +x /sbin/runsvdir-start
 RUN chmod +x /etc/service/apache/run
 COPY conf.d/* /etc/apache2/conf.d/
-RUN dos2unix /sbin/runit-wrapper
-RUN dos2unix /sbin/runsvdir-start
-RUN dos2unix /etc/service/apache/run
 
-EXPOSE 80
-
+VOLUME [ "/var/www/" ]
 WORKDIR /var/www
 
 CMD ["/sbin/runit-wrapper"]
+EXPOSE 80
